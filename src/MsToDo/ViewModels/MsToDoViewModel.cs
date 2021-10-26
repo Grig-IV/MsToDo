@@ -53,7 +53,7 @@ namespace MsToDo.ViewModels
                 execute: _ =>
             {
                 CreateTask(NewTaskNameField);
-                WhipeNewTaskNameField();
+                NewTaskNameField = string.Empty;  // Whipe input field after creating task
             },
                 canExecute: _ => NewTaskNameField != string.Empty);
         }
@@ -73,11 +73,6 @@ namespace MsToDo.ViewModels
             };
 
             _toDoList.Add(task);
-        }
-
-        private void WhipeNewTaskNameField()
-        {
-            NewTaskNameField = string.Empty;
         }
     }
 }
