@@ -3,10 +3,73 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:MsToDo"
+        xmlns:m="clr-namespace:MsToDo.Models"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
+        Title="MainWindow" Height="700" Width="1000">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type m:ToDoTask}">
+            <Button MinHeight="54" Margin="0 1" Padding="7" Background="White"
+                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                <DockPanel LastChildFill="False" VerticalAlignment="Center">
+                    <CheckBox IsChecked="{Binding IsCompleted}" DockPanel.Dock="Left" Width="40" Height="40"
+                                      VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding Name}" DockPanel.Dock="Left" FontSize="14"
+                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </DockPanel>
+            </Button>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Window.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#5c70be" Offset="0" />
+            <GradientStop Color="#788cde" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
+    
+    <Grid Margin="40 0">
+        <DockPanel LastChildFill="False" VerticalAlignment="Top" Panel.ZIndex="1" Height="80">
+            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center"
+                        Foreground="White" FontSize="30" FontWeight="Medium">Tasks</TextBlock>
+        </DockPanel>
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="0 100 0 0">
+                <ItemsControl ItemsSource="{Binding ActiveTasksView}" />
+                <CheckBox x:Name="hideComleteTaskCheckBox" Content="{Binding CompletedTasksCount}"
+                          IsChecked="True" ContentStringFormat="Comleted {0}">
+                    <CheckBox.Style>
+                        <Style TargetType="CheckBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding CompletedTasksView.IsEmpty}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </CheckBox.Style>
+                </CheckBox>
+                <ItemsControl ItemsSource="{Binding CompletedTasksView}">
+                    <ItemsControl.Style>
+                        <Style TargetType="ItemsControl">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=hideComleteTaskCheckBox, Path=IsChecked}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ItemsControl.Style>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid VerticalAlignment="Bottom" Height="50" Margin="0 8 0 32">
+            <TextBox Text="{Binding NewTaskNameField, UpdateSourceTrigger=PropertyChanged}"
+                     Padding="40 0" FontSize="15" Background="#5c70be" Foreground="White"
+                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center">
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter"
+                                Command="{Binding CreateTaskCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </Grid>
     </Grid>
 </Window>

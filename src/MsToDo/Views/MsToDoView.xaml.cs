@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MsToDo.ViewModels;
+using System.Windows;
 
 namespace MsToDo
 {
@@ -7,6 +8,7 @@ namespace MsToDo
         public MsToDoView()
         {
             InitializeComponent();
+            DataContext = new MsToDoViewModel();
         }
     }
 }
