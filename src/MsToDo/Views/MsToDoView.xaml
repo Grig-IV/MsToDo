@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:m="clr-namespace:MsToDo.Models"
-        xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+        xmlns:model="clr-namespace:MsToDo.Models"
+        xmlns:control="clr-namespace:MsToDo.Controls"
         mc:Ignorable="d"
         Title="MainWindow" Height="700" Width="1000">
     <Window.Resources>
-        <DataTemplate DataType="{x:Type m:ToDoTask}">
+        <DataTemplate DataType="{x:Type model:ToDoTask}">
             <Button MinHeight="54" Margin="0 1" Padding="7" Background="White"
                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <DockPanel LastChildFill="False" VerticalAlignment="Center">
@@ -19,6 +19,29 @@
                 </DockPanel>
             </Button>
         </DataTemplate>
+
+        <ContextMenu x:Key="taskItemContextMenu">
+            <MenuItem Command="{Binding Path=DataContext.ChangeCompleteStatusCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                      CommandParameter="{Binding}">
+                <MenuItem.Style>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Header" Value="Mark as completed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsCompleted}" Value="True">
+                                <Setter Property="Header" Value="Mark as not completed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+            <MenuItem Header="Delete task"
+                      Command="{Binding Path=DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
+                      CommandParameter="{Binding}" />
+        </ContextMenu>
+
+        <Style x:Key="taskItemContainerStyle" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="ContextMenu" Value="{StaticResource taskItemContextMenu}" />
+        </Style>
     </Window.Resources>
     
     <Window.Background>
@@ -35,7 +58,7 @@
         </DockPanel>
         <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="0 100 0 0">
-                <ItemsControl ItemsSource="{Binding ActiveTasksView}" />
+                <ItemsControl ItemsSource="{Binding ActiveTasksView}" ItemContainerStyle="{StaticResource taskItemContainerStyle}"/>
                 <CheckBox x:Name="hideComleteTaskCheckBox" Content="{Binding CompletedTasksCount}"
                           IsChecked="True" ContentStringFormat="Comleted {0}">
                     <CheckBox.Style>
@@ -48,7 +71,7 @@
                         </Style>
                     </CheckBox.Style>
                 </CheckBox>
-                <ItemsControl ItemsSource="{Binding CompletedTasksView}">
+                <ItemsControl ItemsSource="{Binding CompletedTasksView}" ItemContainerStyle="{StaticResource taskItemContainerStyle}">
                     <ItemsControl.Style>
                         <Style TargetType="ItemsControl">
                             <Style.Triggers>
@@ -61,15 +84,16 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        <Grid VerticalAlignment="Bottom" Height="50" Margin="0 8 0 32">
-            <TextBox Text="{Binding NewTaskNameField, UpdateSourceTrigger=PropertyChanged}"
-                     Padding="40 0" FontSize="15" Background="#5c70be" Foreground="White"
-                     HorizontalAlignment="Stretch" VerticalContentAlignment="Center">
-                <TextBox.InputBindings>
-                    <KeyBinding Key="Enter"
-                                Command="{Binding CreateTaskCommand}"/>
-                </TextBox.InputBindings>
-            </TextBox>
-        </Grid>
+        <control:AddTaskTextBox DeafultText="Add a task" CornerRadius="3"
+                                Text="{Binding NewTaskNameField, UpdateSourceTrigger=PropertyChanged}"
+                                TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Center"
+                                Height="52" Margin="0 8 0 32" Padding="40 0" FontSize="15"
+                                Background="#5c70be" Foreground="White">
+
+            <TextBox.InputBindings>
+                <KeyBinding Key="Enter" Command="{Binding AddTaskCommand}"/>
+            </TextBox.InputBindings>
+        </control:AddTaskTextBox>
     </Grid>
 </Window>

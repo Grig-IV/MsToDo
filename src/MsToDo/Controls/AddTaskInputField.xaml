@@ -1,0 +1,16 @@
+﻿<TextBox x:Class="MsToDo.Controls.AddTaskTextBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="400">
+    <TextBox.Template>
+        <ControlTemplate TargetType="TextBox">
+            <Border Background="{TemplateBinding Background}"
+                    CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=TextBox}}">
+                <ScrollViewer x:Name="PART_ContentHost" />
+            </Border>
+        </ControlTemplate>
+    </TextBox.Template>
+</TextBox>

@@ -1,10 +1,7 @@
 ﻿using MsToDo.Models;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using WordStorage.Utils;
 
@@ -12,30 +9,35 @@ namespace MsToDo.ViewModels
 {
     public class MsToDoViewModel : Notifier
     {
-        private MsToDoList _toDoList;
+        private MsToDoModel _msToDo;
         private ICollectionView _activeTasksView;
         private ICollectionView _comletedTasksView;
         private string _newTaskNameField;
-        private RelayCommand _createTaskCommand;
+        private RelayCommand _addTaskCommand;
+        private RelayCommand _deleteTaskCommand;
+        private RelayCommand _changeCompleteStatusCommand;
 
         public MsToDoViewModel()
         {
-            _toDoList = MsToDoList.Instance;
+            _msToDo = MsToDoModel.Instance;
 
             _newTaskNameField = "Add a task";
-
-            _activeTasksView = new CollectionViewSource { Source = _toDoList }.View;
+            
+            _activeTasksView = new CollectionViewSource { Source = _msToDo.Tasks }.View;
             _activeTasksView.Filter = t => !((ToDoTask)t).IsCompleted;
 
-            _comletedTasksView = new CollectionViewSource { Source = _toDoList }.View;
+            _comletedTasksView = new CollectionViewSource { Source = _msToDo.Tasks }.View;
             _comletedTasksView.Filter = t => ((ToDoTask)t).IsCompleted;
+
+            // Set task's PropertyChanged event
+            foreach (var task in _msToDo.Tasks) task.PropertyChanged += Task_PropertyChangedEventHandler;
         }
 
         public ICollectionView ActiveTasksView => _activeTasksView;
 
         public ICollectionView CompletedTasksView => _comletedTasksView;
 
-        public ushort CompletedTasksCount => (ushort)_toDoList.Count(t => t.IsCompleted);
+        public ushort CompletedTasksCount => (ushort)_msToDo.Tasks.Count(t => t.IsCompleted);
 
         public string NewTaskNameField
         {
@@ -47,32 +49,44 @@ namespace MsToDo.ViewModels
             }
         }
 
-        public RelayCommand CreateTaskCommand
+        public RelayCommand AddTaskCommand
         {
-            get => _createTaskCommand ??= new RelayCommand(
+            get => _addTaskCommand ??= new RelayCommand(
                 execute: _ =>
-            {
-                CreateTask(NewTaskNameField);
-                NewTaskNameField = string.Empty;  // Whipe input field after creating task
-            },
+                {
+                    AddToDoTaskAsync(NewTaskNameField);
+                    NewTaskNameField = string.Empty;  // Whipe input field after creating task
+                },
                 canExecute: _ => NewTaskNameField != string.Empty);
         }
 
-        private void CreateTask(string taskName)
+        public RelayCommand DeleteTaskCommand
         {
-            var task = new ToDoTask(taskName);
+            get => _deleteTaskCommand ??= new RelayCommand(
+                execute: taskObj => _msToDo.DeleteTaskAsync((IToDoTask)taskObj));
+        }
 
-            task.PropertyChanged += (_, e) =>
+        // Command is use in ContextMenu
+        public RelayCommand ChangeCompleteStatusCommand
+        {
+            get => _changeCompleteStatusCommand ??= new RelayCommand(
+                execute: taskObj => ((IToDoTask)taskObj).IsCompleted = !((IToDoTask)taskObj).IsCompleted);
+        }
+
+        private async Task AddToDoTaskAsync(string taskName)
+        {
+            var task = await _msToDo.AddTaskAsync(taskName);
+            task.PropertyChanged += Task_PropertyChangedEventHandler;
+        }
+
+        private void Task_PropertyChangedEventHandler(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ToDoTask.IsCompleted))
             {
-                if (e.PropertyName == nameof(ToDoTask.IsCompleted))
-                {
-                    _activeTasksView.Refresh();
-                    _comletedTasksView.Refresh();
-                    NotifyPropertyChanged(nameof(CompletedTasksCount));
-                }
-            };
-
-            _toDoList.Add(task);
+                _activeTasksView.Refresh();
+                _comletedTasksView.Refresh();
+                NotifyPropertyChanged(nameof(CompletedTasksCount));
+            }
         }
     }
 }
