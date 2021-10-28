@@ -3,4 +3,4 @@
 
 
 # Stage 1:
-![Alt text](\readme_res/stage_1.png "State 1")
+![Alt text](/readme_res/stage_1.png "State 1")
