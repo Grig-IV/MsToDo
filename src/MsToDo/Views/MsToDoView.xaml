@@ -84,16 +84,92 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        <control:AddTaskTextBox DeafultText="Add a task" CornerRadius="3"
-                                Text="{Binding NewTaskNameField, UpdateSourceTrigger=PropertyChanged}"
-                                TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale"
-                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" VerticalContentAlignment="Center"
-                                Height="52" Margin="0 8 0 32" Padding="40 0" FontSize="15"
-                                Background="#5c70be" Foreground="White">
-
-            <TextBox.InputBindings>
-                <KeyBinding Key="Enter" Command="{Binding AddTaskCommand}"/>
-            </TextBox.InputBindings>
-        </control:AddTaskTextBox>
+        
+        <!--Add a task field-->
+        <Border VerticalAlignment="Bottom"
+                Height="92"
+                Padding="40 8 40 32">
+            <TextBox x:Name="addTaskInputTextBox"
+                     Text="{Binding AddTaskInputField, UpdateSourceTrigger=PropertyChanged}"
+                     VerticalContentAlignment="Center"
+                     FontSize="15"
+                     Foreground="White">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Background" Value="#5c70be" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#586cb7" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+                <TextBox.Template>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                            <Grid>
+                                <ContentControl VerticalAlignment="Center"
+                                                HorizontalAlignment="Left"
+                                                Width="40"
+                                                Margin="7">
+                                    <ContentControl.Style>
+                                        <Style TargetType="ContentControl">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Path Data="M 0,8 L 16,8 M 8,0 L 8,16 Z"
+                                                                Width="16" Height="16"
+                                                                Stroke="#B0FFFFFF"
+                                                                StrokeThickness="2" />
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=addTaskInputTextBox, Path=IsFocused}" Value="True">
+                                                    <Setter Property="Content">
+                                                        <Setter.Value>
+                                                            <Ellipse Width="22" Height="23"
+                                                                     Stroke="#DEE2F1"
+                                                                     StrokeThickness="2" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ContentControl.Style>
+                                </ContentControl>
+                                <TextBlock HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Margin="54 0">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding ElementName=addTaskInputTextBox, Path=IsFocused}" Value="False" />
+                                                        <Condition Binding="{Binding  ElementName=addTaskInputTextBox, Path=Text}" Value="" />
+                                                    </MultiDataTrigger.Conditions>
+                                                    <MultiDataTrigger.Setters>
+                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    </MultiDataTrigger.Setters>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    Add a task
+                                </TextBlock>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                              Margin="54 0 0 0"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </TextBox.Template>
+                <TextBox.InputBindings>
+                    <KeyBinding Key="Enter" Command="{Binding AddTaskCommand}"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </Border>
     </Grid>
 </Window>

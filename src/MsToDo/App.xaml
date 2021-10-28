@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:MsToDo"
              StartupUri="Views/MsToDoView.xaml">
     <Application.Resources>
-         
+        <Style TargetType="FrameworkElement">
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+            <Setter Property="TextOptions.TextRenderingMode" Value="Grayscale" />
+        </Style>
     </Application.Resources>
 </Application>
