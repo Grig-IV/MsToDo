@@ -12,7 +12,7 @@ namespace MsToDo.ViewModels
         private MsToDoModel _msToDo;
         private ICollectionView _activeTasksView;
         private ICollectionView _comletedTasksView;
-        private string _newTaskNameField;
+        private string _addTaskInputField;
         private RelayCommand _addTaskCommand;
         private RelayCommand _deleteTaskCommand;
         private RelayCommand _changeCompleteStatusCommand;
@@ -21,7 +21,7 @@ namespace MsToDo.ViewModels
         {
             _msToDo = MsToDoModel.Instance;
 
-            _newTaskNameField = "Add a task";
+            _addTaskInputField = string.Empty;
             
             _activeTasksView = new CollectionViewSource { Source = _msToDo.Tasks }.View;
             _activeTasksView.Filter = t => !((ToDoTask)t).IsCompleted;
@@ -39,12 +39,12 @@ namespace MsToDo.ViewModels
 
         public ushort CompletedTasksCount => (ushort)_msToDo.Tasks.Count(t => t.IsCompleted);
 
-        public string NewTaskNameField
+        public string AddTaskInputField
         {
-            get { return _newTaskNameField; }
+            get { return _addTaskInputField; }
             set
             {
-                _newTaskNameField = value;
+                _addTaskInputField = value;
                 NotifyPropertyChanged();
             }
         }
@@ -54,10 +54,10 @@ namespace MsToDo.ViewModels
             get => _addTaskCommand ??= new RelayCommand(
                 execute: _ =>
                 {
-                    AddToDoTaskAsync(NewTaskNameField);
-                    NewTaskNameField = string.Empty;  // Whipe input field after creating task
+                    AddToDoTaskAsync(AddTaskInputField);
+                    AddTaskInputField = string.Empty;  // Whipe input field after creating task
                 },
-                canExecute: _ => NewTaskNameField != string.Empty);
+                canExecute: _ => AddTaskInputField != string.Empty);
         }
 
         public RelayCommand DeleteTaskCommand
