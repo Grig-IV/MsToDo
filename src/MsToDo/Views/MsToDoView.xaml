@@ -4,18 +4,112 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:model="clr-namespace:MsToDo.Models"
-        xmlns:control="clr-namespace:MsToDo.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700" Width="1000">
+        Title="Ms To Do" Height="700" Width="1000">
     <Window.Resources>
+        <!--Task data template-->
         <DataTemplate DataType="{x:Type model:ToDoTask}">
-            <Button MinHeight="54" Margin="0 1" Padding="7" Background="White"
-                    HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                <DockPanel LastChildFill="False" VerticalAlignment="Center">
-                    <CheckBox IsChecked="{Binding IsCompleted}" DockPanel.Dock="Left" Width="40" Height="40"
-                                      VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
-                    <TextBlock Text="{Binding Name}" DockPanel.Dock="Left" FontSize="14"
-                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
+            <DataTemplate.Resources>
+                <SolidColorBrush x:Key="toDoGrayColor">#FF7B7B7B</SolidColorBrush>
+                <SolidColorBrush x:Key="toDoWhiteColor">#FFFFFFFF</SolidColorBrush>
+                <SolidColorBrush x:Key="toDoBlueColor">#FF5C70BE</SolidColorBrush>
+            </DataTemplate.Resources>
+            <Button MinHeight="54"
+                    Margin="0 1"
+                    Background="{StaticResource toDoWhiteColor}"
+                    BorderThickness="0"
+                    HorizontalContentAlignment="Stretch"
+                    VerticalContentAlignment="Stretch">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <DockPanel LastChildFill="False"
+                           VerticalAlignment="Center">
+                    <ToggleButton x:Name="isCompletedTglBtn"
+                                  IsChecked="{Binding IsCompleted}"
+                                  DockPanel.Dock="Left"
+                                  VerticalContentAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Foreground="{StaticResource toDoGrayColor}"
+                                  Background="Transparent"
+                                  Margin="6">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid Width="40" Height="40"
+                                      Background="Transparent">
+                                    <Ellipse x:Name="checkEllipse"
+                                             Width="22" Height="23"
+                                             StrokeThickness="2"
+                                             Stroke="{TemplateBinding Foreground}"
+                                             Fill="{TemplateBinding Background}" />
+                                    <Canvas Width="10" Height="7"
+                                            Margin="0 1 0 0">
+                                        <Polyline x:Name="checkMark"
+                                                  Stroke="{TemplateBinding Foreground}"
+                                                  StrokeThickness="2"
+                                                  Points="0, 2, 4, 6, 9, 0"
+                                                  Visibility="Collapsed" />
+                                    </Canvas>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <!--Checked is false triggers-->
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsChecked" Value="False" />
+                                            <Condition Property="IsPressed" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <MultiTrigger.Setters>
+                                            <Setter TargetName="checkEllipse" Property="Fill" Value="{StaticResource toDoGrayColor}" />
+                                            <Setter TargetName="checkMark" Property="Stroke" Value="{StaticResource toDoWhiteColor}" />
+                                        </MultiTrigger.Setters>
+                                    </MultiTrigger>
+                                    <!--Checked is true triggers-->
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="checkMark" Property="Visibility" Value="Visible" />
+                                        <Setter TargetName="checkMark" Property="Stroke" Value="{StaticResource toDoWhiteColor}" />
+                                        <Setter TargetName="checkEllipse" Property="Fill" Value="{StaticResource toDoBlueColor}" />
+                                        <Setter TargetName="checkEllipse" Property="Stroke" Value="{StaticResource toDoBlueColor}" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsChecked" Value="True" />
+                                            <Condition Property="IsPressed" Value="True" />
+                                        </MultiTrigger.Conditions>
+                                        <MultiTrigger.Setters>
+                                            <Setter TargetName="checkMark" Property="Stroke" Value="Transparent" />
+                                            <Setter TargetName="checkEllipse" Property="Fill" Value="Transparent" />
+                                            <Setter TargetName="checkEllipse" Property="Stroke" Value="{StaticResource toDoGrayColor}" />
+                                        </MultiTrigger.Setters>
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                    <TextBlock Text="{Binding Name}"
+                               DockPanel.Dock="Left"
+                               FontSize="14"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ElementName=isCompletedTglBtn, Path=IsChecked}" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource toDoGrayColor}" />
+                                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </DockPanel>
             </Button>
         </DataTemplate>
@@ -51,31 +145,106 @@
         </LinearGradientBrush>
     </Window.Background>
     
-    <Grid Margin="40 0">
-        <DockPanel LastChildFill="False" VerticalAlignment="Top" Panel.ZIndex="1" Height="80">
-            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center"
-                        Foreground="White" FontSize="30" FontWeight="Medium">Tasks</TextBlock>
-        </DockPanel>
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Margin="0 100 0 0">
-                <ItemsControl ItemsSource="{Binding ActiveTasksView}" ItemContainerStyle="{StaticResource taskItemContainerStyle}"/>
-                <CheckBox x:Name="hideComleteTaskCheckBox" Content="{Binding CompletedTasksCount}"
-                          IsChecked="True" ContentStringFormat="Comleted {0}">
-                    <CheckBox.Style>
-                        <Style TargetType="CheckBox">
+    <Grid>
+        <!--Header-->
+        <Border VerticalAlignment="Top"
+                Panel.ZIndex="1"
+                Padding="40 16 40 27">
+            <DockPanel LastChildFill="False">
+                <Path Margin="0 0 15 0"
+                      Width="22" Height="21"
+                      VerticalAlignment="Center"
+                      Stroke="White"
+                      StrokeThickness="1"
+                      Data="M 11.156415 0.06267003 10.829612 0.4243572 C 7.4740971 4.1280466 4.1266421 7.8222825 0.7711569 11.525939 l -0.7224988 0.797189 h 2.5260961 v 8.739542 h 6.6826721 v -7.558523 h 3.7997427 v 7.558523 h 6.682672 v -8.975746 h 2.308817 L 21.326159 11.289736 C 18.04357 7.6717078 14.768684 4.0436092 11.484984 0.4243572 Z m 0 1.37293497 c 2.932012 3.2327415 5.857787 6.4721781 8.790107 9.706504 h -1.111129 v 8.975747 H 13.961617 V 12.559331 H 8.3529782 v 0.472407 7.086118 H 3.4792026 V 11.378312 H 2.150794 C 5.1547509 8.0625947 8.1519132 4.7518894 11.156415 1.435605 Z"/>
+                <TextBlock DockPanel.Dock="Left"
+                           VerticalAlignment="Bottom"
+                           Foreground="White"
+                           FontSize="28"
+                           FontWeight="Medium">
+                Tasks
+                </TextBlock>
+            </DockPanel>
+        </Border>
+        
+        <!--Task lists-->
+        <ScrollViewer VerticalScrollBarVisibility="Hidden"
+                      HorizontalScrollBarVisibility="Disabled"
+                      Focusable="False"
+                      Margin="40 0">
+            <StackPanel Margin="0 81 0 0">
+                <!--Active tasks-->
+                <ItemsControl ItemsSource="{Binding ActiveTasksView}"
+                              ItemContainerStyle="{StaticResource taskItemContainerStyle}"/>
+                
+                <!--Completed task hide button-->
+                <ToggleButton x:Name="hideComleteTaskThlBtn"
+                              IsChecked="True"
+                              HorizontalAlignment="Left"
+                              Width="127" Height="28"
+                              Margin="0 13 0 11">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="Background" Value="#19000000" />
+                            <Setter Property="FontSize" Value="15" />
+                            <Setter Property="FontWeight" Value="Light" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding CompletedTasksView.IsEmpty}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#2E000000" />
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
-                    </CheckBox.Style>
-                </CheckBox>
-                <ItemsControl ItemsSource="{Binding CompletedTasksView}" ItemContainerStyle="{StaticResource taskItemContainerStyle}">
+                    </ToggleButton.Style>
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border Width="{TemplateBinding Width}"
+                                    Height="{TemplateBinding Height}"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="3">
+                                <WrapPanel VerticalAlignment="Center">
+                                    <Canvas Width="6" Height="12"
+                                            Margin="11 0"
+                                            VerticalAlignment="Center">
+                                        <Polyline Stroke="{TemplateBinding Foreground}"
+                                                  Points="0, 0, 6, 6, 0, 12">
+                                            <Polyline.Style>
+                                                <Style TargetType="Polyline">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding ElementName=hideComleteTaskThlBtn, Path=IsChecked}" Value="False">
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <RotateTransform CenterX="3" CenterY="6" Angle="90" />
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Polyline.Style>
+                                        </Polyline>
+                                    </Canvas>
+                                    <ContentPresenter VerticalAlignment="Center"
+                                                      HorizontalAlignment="Left" />
+                                </WrapPanel>
+                            </Border>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                    <WrapPanel>
+                        <TextBlock Text="Completed" Margin="0 0 13 0"/>
+                        <TextBlock Text="{Binding CompletedTasksCount}" />
+                    </WrapPanel>
+                </ToggleButton>
+
+                <!--Completed tasks-->
+                <ItemsControl ItemsSource="{Binding CompletedTasksView}"
+                              ItemContainerStyle="{StaticResource taskItemContainerStyle}">
                     <ItemsControl.Style>
                         <Style TargetType="ItemsControl">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=hideComleteTaskCheckBox, Path=IsChecked}" Value="True">
+                                <DataTrigger Binding="{Binding ElementName=hideComleteTaskThlBtn, Path=IsChecked}" Value="True">
                                     <Setter Property="Visibility" Value="Collapsed" />
                                 </DataTrigger>
                             </Style.Triggers>
