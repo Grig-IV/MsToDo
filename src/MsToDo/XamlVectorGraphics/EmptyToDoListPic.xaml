@@ -1,0 +1,38 @@
+﻿<Canvas x:Class="MsToDo.XamlVectorGraphics.EmptyToDoListPic"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        mc:Ignorable="d" 
+        Width="435" Height="483">
+    <!--Sparkels-->
+    <Polygon Points="83,63 59,97 83,131 108,97 "  FillRule="NonZero" Fill="#FFFED591"/>
+    <Polygon Points="162,415 138,449 162,483 187,449 "  FillRule="NonZero" Fill="#FFFED591"/>
+    <Polygon Points="410,202 386,236 410,270 435,236 "  FillRule="NonZero" Fill="#FFFED591"/>
+    <!--Star-->
+    <Path  Fill="#FFBC9A68" Data="M322.09 293.69l5.74 35.96c0.3 1.9 1.51 3.55 3.24 4.41L361 348c4.34 2.16 5.27 10.88 1 13l-30.27 15.66   c-1.7 0.84-2.86 2.48-3.1 4.38L324 415c-0.62 4.78-8.59 6.48-12 3l-23.43-24c-1.35-1.38-3.28-2.02-5.15-1.7L247 398   c-7 0-10.17-5.73-8-10l19.01-30.28c0.86-1.69 0.83-3.72-0.08-5.43l-17.28-32.22c-2.3-4.29 1.23-9.27 5.98-8.43l35.65 6.31   c1.88 0.33 3.79-0.28 5.1-1.65L311 288C314.3 284.56 321.33 288.91 322.09 293.69z"/>
+    <Path  Fill="#FFFED591" Data="M319.37 291.43l5.34 35.41c0.28 1.87 1.47 3.48 3.17 4.31l32.2 15.68c4.29 2.09 4.32 8.18 0.05 10.31   l-32.03 16.02c-1.69 0.85-2.86 2.47-3.12 4.35l-4.96 35.46c-0.66 4.72-6.45 6.63-9.79 3.24l-25.13-25.51   c-1.33-1.35-3.24-1.96-5.1-1.63l-35.26 6.24c-4.69 0.83-8.3-4.08-6.11-8.31l16.5-31.78c0.87-1.68 0.86-3.68-0.03-5.35l-16.83-31.61   c-2.24-4.21 1.32-9.16 6.02-8.38l35.33 5.87c1.87 0.31 3.77-0.32 5.08-1.68l24.86-25.77C312.85 284.87 318.66 286.72 319.37 291.43   z"/>
+    <!--Check mark buble-->
+    <Ellipse  Canvas.Left="159" Width="205" Canvas.Top="4" Height="204"  Fill="#FFC6C4C5"/>
+    <Ellipse  Canvas.Left="155" Canvas.Top="0" Width="199.9" Height="199.9"  Fill="#FFF3F2F1"/>
+    <Path   StrokeThickness="21" Stroke="#FF7282BF" StrokeMiterLimit="10" StrokeStartLineCap="Round" StrokeEndLineCap="Round" Data="M220 98   c7.67 6.67 15.33 13.33 23 20c14.33-13.67 28.67-27.33 43-41"/>
+    <!--Sun-->
+    <Ellipse Canvas.Left="53.3" Canvas.Top="247.9" Width="77.8" Height="77.8" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="51.2" Canvas.Top="245.8" Width="77.8" Height="77.8" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="103.4" Canvas.Top="207.7" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="101.5" Canvas.Top="205.6" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="142.7" Canvas.Top="243.6" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="140.8" Canvas.Top="241.5" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="145.2" Canvas.Top="297.8" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="143.3" Canvas.Top="295.6" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="108.4" Canvas.Top="338.5" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="106.6" Canvas.Top="336.4" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="55.1" Canvas.Top="339.6" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="53.2" Canvas.Top="337.4" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="14.7" Canvas.Top="301.9" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="12.9" Canvas.Top="299.8" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="12.9" Canvas.Top="247.9" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="11" Canvas.Top="245.7" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+    <Ellipse Canvas.Left="48.2" Canvas.Top="208.7" Width="29.6" Height="29.6" Fill="#FFBC9A68"/>
+    <Ellipse Canvas.Left="46.3" Canvas.Top="206.6" Width="29.6" Height="29.6" Fill="#FFFED591"/>
+</Canvas>

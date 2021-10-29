@@ -4,8 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:model="clr-namespace:MsToDo.Models"
+        xmlns:graphic="clr-namespace:MsToDo.XamlVectorGraphics"
         mc:Ignorable="d"
-        Title="Ms To Do" Height="700" Width="1000">
+        Title="Ms To Do"
+        Height="700" Width="1000"
+        MinHeight="500" MinWidth="360">
     <Window.Resources>
         <!--Task data template-->
         <DataTemplate DataType="{x:Type model:ToDoTask}">
@@ -114,11 +117,28 @@
             </Button>
         </DataTemplate>
 
-        <ContextMenu x:Key="taskItemContextMenu">
+        <ContextMenu x:Key="taskItemContextMenu"
+                     Width="250">
+            <ContextMenu.Resources>
+                <Style x:Key="basicItemMenuStl" TargetType="MenuItem">
+                    <Setter Property="Height" Value="46" />
+                    <Setter Property="Margin" Value="1" />
+                    <Setter
+            </ContextMenu.Resources>
+            <ContextMenu.Template>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="White"
+                            BorderBrush="#EDEDED"
+                            BorderThickness="1">
+                        <StackPanel IsItemsHost="True"
+                                    KeyboardNavigation.DirectionalNavigation="Cycle" />
+                    </Border>
+                </ControlTemplate>
+            </ContextMenu.Template>
             <MenuItem Command="{Binding Path=DataContext.ChangeCompleteStatusCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
                       CommandParameter="{Binding}">
                 <MenuItem.Style>
-                    <Style TargetType="MenuItem">
+                    <Style TargetType="MenuItem" BasedOn="{StaticResource basicItemMenuStl}">
                         <Setter Property="Header" Value="Mark as completed" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsCompleted}" Value="True">
@@ -130,7 +150,8 @@
             </MenuItem>
             <MenuItem Header="Delete task"
                       Command="{Binding Path=DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType=ItemsControl, AncestorLevel=2}}"
-                      CommandParameter="{Binding}" />
+                      CommandParameter="{Binding}"
+                      Style="{StaticResource basicItemMenuStl}"/>
         </ContextMenu>
 
         <Style x:Key="taskItemContainerStyle" TargetType="{x:Type FrameworkElement}">
@@ -167,7 +188,36 @@
             </DockPanel>
         </Border>
         
-        <!--Task lists-->
+        <!--Body-->
+        <!--Empty To Do list plug-->
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ActiveTasksView.IsEmpty}" Value="True" />
+                                <Condition Binding="{Binding CompletedTasksView.IsEmpty}" Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Visible" />
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Viewbox Width="112" Height="124"
+                     Margin="0 0 0 40">
+                <graphic:EmptyToDoListPic/>
+            </Viewbox>
+            <TextBlock Foreground="White"
+                       FontSize="15">
+                Tasks show up here
+            </TextBlock>
+        </StackPanel>
+        <!--To Do list-->
         <ScrollViewer VerticalScrollBarVisibility="Hidden"
                       HorizontalScrollBarVisibility="Disabled"
                       Focusable="False"
@@ -253,11 +303,12 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        
-        <!--Add a task field-->
+
+        <!--Footer-->
         <Border VerticalAlignment="Bottom"
                 Height="92"
                 Padding="40 8 40 32">
+            <!--Add a task field-->
             <TextBox x:Name="addTaskInputTextBox"
                      Text="{Binding AddTaskInputField, UpdateSourceTrigger=PropertyChanged}"
                      VerticalContentAlignment="Center"
